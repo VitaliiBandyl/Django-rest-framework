@@ -1,3 +1,4 @@
+from rest_framework import viewsets
 from rest_framework.generics import get_object_or_404, GenericAPIView, ListCreateAPIView, RetrieveAPIView, \
     RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework.mixins import ListModelMixin, CreateModelMixin
@@ -39,15 +40,40 @@ from .serializers import ArticleSerializer
 #             "message": f"Article with id `{pk}` has been deleted."
 #         }, status=204)
 
-class ArticleView(ListCreateAPIView):
-    queryset = Article.objects.all()
+# class ArticleView(ListCreateAPIView):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
+#
+#     def perform_create(self, serializer):
+#         author = get_object_or_404(Author, id=self.request.data.get('author_id'))
+#         return serializer.save(author=author)
+#
+#
+# class SingleArticleView(RetrieveUpdateDestroyAPIView):
+#     queryset = Article.objects.all()
+#     serializer_class = ArticleSerializer
+
+
+# class ArticleView(viewsets.ViewSet):
+#     """
+#     A simple ViewSet that for listing or retrieving users.
+#     """
+#     def list(self, request):
+#         queryset = Article.objects.all()
+#         serializer = ArticleSerializer(queryset, many=True)
+#         return Response(serializer.data)
+#
+#     def retrieve(self, request, pk=None):
+#         queryset = Article.objects.all()
+#         user = get_object_or_404(queryset, pk=pk)
+#         serializer = ArticleSerializer(user)
+#         return Response(serializer.data)
+
+
+class ArticleViewSet(viewsets.ModelViewSet):
     serializer_class = ArticleSerializer
+    queryset = Article.objects.all()
 
     def perform_create(self, serializer):
         author = get_object_or_404(Author, id=self.request.data.get('author_id'))
         return serializer.save(author=author)
-
-
-class SingleArticleView(RetrieveUpdateDestroyAPIView):
-    queryset = Article.objects.all()
-    serializer_class = ArticleSerializer
